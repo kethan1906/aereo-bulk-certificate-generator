@@ -184,6 +184,4 @@ The application validates incoming requests and handles errors that occur during
 
 GitHub: [kethan1906](https://github.com/kethan1906)
 
-## License
 
-A license has not yet been specified. Add a license file if you intend to distribute this project under a particular open-source license.
