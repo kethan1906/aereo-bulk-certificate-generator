@@ -1,68 +1,63 @@
 # AEREO Bulk Certificate Generator API
 
-A REST API built using **FastAPI** to generate and manage certificates in bulk. The application accepts recipient details, creates a generation job, generates certificates in PDF format, and provides endpoints to track job status and retrieve generated certificates.
+A REST API built with FastAPI to generate and manage certificates in bulk. The application accepts recipient information, creates a generation job, generates PDF certificates, and provides endpoints to track job status and retrieve certificates.
 
 ## Features
 
-* **Bulk certificate generation:** Generate certificates for multiple recipients through a single API request.
-* **REST API:** Exposes endpoints to create generation jobs, check job status, and retrieve certificates.
-* **PDF generation:** Uses ReportLab to create certificate PDFs.
-* **Job tracking:** Tracks the status and results of certificate generation jobs.
-* **Database integration:** Uses SQLAlchemy with SQLite as the default database.
-* **Input validation:** Uses Pydantic schemas to validate API requests.
-* **Error handling:** Handles invalid requests and generation failures.
-* **Failure isolation:** A failure while generating one recipient's certificate does not necessarily prevent processing the remaining recipients.
-* **API documentation:** Provides interactive API documentation through FastAPI's Swagger UI.
-* **Automated tests:** Includes tests for API endpoints, validation, certificate generation, and failure scenarios.
+* Bulk certificate generation through a single API request.
+* REST endpoints for creating jobs, checking job status, and retrieving certificates.
+* PDF certificate generation using ReportLab.
+* Request validation using Pydantic.
+* Database operations using SQLAlchemy and SQLite by default.
+* Job tracking and error handling.
+* Isolation of individual certificate-generation failures.
+* Interactive API documentation through Swagger UI.
+* Automated tests using Pytest.
 
-## Tech Stack
+## Technology Stack
 
-| Technology | Purpose                                            |
-| ---------- | -------------------------------------------------- |
-| Python     | Main programming language                          |
-| FastAPI    | Builds the REST API                                |
-| Uvicorn    | Runs the application server                        |
-| Pydantic   | Validates request and response data                |
-| SQLAlchemy | Handles database operations                        |
-| SQLite     | Stores job and certificate-related data by default |
-| ReportLab  | Generates PDF certificates                         |
-| Pytest     | Tests application functionality                    |
+| Technology | Purpose                         |
+| ---------- | ------------------------------- |
+| Python     | Main programming language       |
+| FastAPI    | REST API framework              |
+| Uvicorn    | Application server              |
+| Pydantic   | Request and response validation |
+| SQLAlchemy | Database operations             |
+| SQLite     | Default database                |
+| ReportLab  | PDF generation                  |
+| Pytest     | Automated testing               |
 
-## Project Architecture
-
-The application follows a modular structure, separating API endpoints, business logic, database operations, data models, and utility functions.
+## Project Structure
 
 ```text
 aereo-bulk-certificate-generator/
-│
 ├── app/
-│   ├── api/             # API routes and endpoints
-│   ├── core/            # Application configuration
-│   ├── db/              # Database setup and session management
-│   ├── models/          # Database models
-│   ├── repositories/    # Database access operations
-│   ├── schemas/         # Request and response validation
-│   ├── services/        # Certificate generation and job logic
-│   ├── templates/       # Certificate templates
-│   ├── utils/           # Shared utility functions
-│   └── main.py          # FastAPI application entry point
-│
-├── tests/               # Automated tests
-├── generated/           # Generated output, if configured locally
-├── requirements.txt     # Python dependencies
-├── .gitignore           # Files excluded from Git
-└── README.md            # Project documentation
+│   ├── api/
+│   │   ├── routes/
+│   │   ├── deps.py
+│   │   └── router.py
+│   ├── core/
+│   ├── db/
+│   ├── models/
+│   ├── repositories/
+│   ├── schemas/
+│   ├── services/
+│   ├── templates/
+│   ├── utils/
+│   └── main.py
+├── tests/
+├── generated/
+├── requirements.txt
+├── .gitignore
+└── README.md
 ```
 
-*Note: This is a high-level overview. Ensure the directory names match the actual folders in the repository.*
+The `generated/` directory contains runtime output when configured by the application. Generated files should generally not be committed to the repository.
 
 ## Prerequisites
 
-Install the following before running the project:
-
-* Python 3.10 or a compatible version supported by the dependencies
-* Git
-* A terminal such as PowerShell or Command Prompt
+* Python installed on your system.
+* Git, if you want to clone the repository and work locally.
 
 ## Installation and Setup
 
@@ -81,13 +76,13 @@ On Windows PowerShell:
 py -m venv .venv
 ```
 
-### 3. Activate the virtual environment
+### 3. Activate the environment
 
 ```powershell
 .\.venv\Scripts\Activate.ps1
 ```
 
-If PowerShell blocks script execution, you can use Command Prompt instead:
+If PowerShell blocks activation, you can use Command Prompt:
 
 ```cmd
 .venv\Scripts\activate.bat
@@ -99,13 +94,13 @@ If PowerShell blocks script execution, you can use Command Prompt instead:
 py -m pip install -r requirements.txt
 ```
 
-### 5. Start the application
+### 5. Start the API
 
 ```powershell
 py -m uvicorn app.main:app --reload
 ```
 
-The API should now be available at:
+The application should be available at:
 
 `http://127.0.0.1:8000`
 
@@ -115,105 +110,73 @@ Visit:
 
 `http://127.0.0.1:8000/docs`
 
-Use the interactive Swagger UI to inspect the endpoints, provide request data, and test the API.
+Use Swagger UI to inspect the available endpoints and test requests.
 
 ### 7. Run the tests
-
-Open another terminal in the project directory, activate the virtual environment, and run:
 
 ```powershell
 py -m pytest -q
 ```
 
-The command runs the automated test suite. Confirm the results in your terminal before reporting the test count.
+Review the terminal output to confirm whether the tests pass.
 
 ## API Endpoints
 
-The API exposes the following endpoints:
+| Method | Endpoint                                | Description                          |
+| ------ | --------------------------------------- | ------------------------------------ |
+| `POST` | `/api/v1/generation-jobs`               | Creates a certificate generation job |
+| `GET`  | `/api/v1/generation-jobs/{job_id}`      | Retrieves job status and results     |
+| `GET`  | `/api/v1/certificates/{certificate_id}` | Retrieves a generated certificate    |
+| `GET`  | `/health`                               | Checks application health            |
 
-| Method | Endpoint                                | Description                                          |
-| ------ | --------------------------------------- | ---------------------------------------------------- |
-| `POST` | `/api/v1/generation-jobs`               | Creates a certificate generation job                 |
-| `GET`  | `/api/v1/generation-jobs/{job_id}`      | Retrieves the status and results of a generation job |
-| `GET`  | `/api/v1/certificates/{certificate_id}` | Retrieves a generated certificate                    |
-| `GET`  | `/health`                               | Checks application health                            |
+### Create a generation job
 
-### 1. Create a generation job
+`POST /api/v1/generation-jobs`
 
-**Endpoint:**
+Submit recipient information in the JSON format expected by the request schema. The application validates the request and creates a generation job.
 
-```http
-POST /api/v1/generation-jobs
-```
+### Check generation status
 
-Submit the recipient information and any other fields required by the request schema. The API validates the input and creates a generation job.
+`GET /api/v1/generation-jobs/{job_id}`
 
-Check the request schema in `/docs` for the exact JSON format expected by the application.
+Use the job ID returned by the API to check the job's status and available results.
 
-### 2. Check job status
+### Retrieve a certificate
 
-**Endpoint:**
+`GET /api/v1/certificates/{certificate_id}`
 
-```http
-GET /api/v1/generation-jobs/{job_id}
-```
+Use a valid certificate ID to retrieve the corresponding certificate.
 
-Replace `{job_id}` with the ID returned when the generation job was created. The response provides the available job status and result information.
+### Health check
 
-### 3. Retrieve a certificate
+`GET /health`
 
-**Endpoint:**
-
-```http
-GET /api/v1/certificates/{certificate_id}
-```
-
-Replace `{certificate_id}` with a valid certificate ID. The endpoint retrieves the corresponding certificate according to the application's response implementation.
-
-### 4. Check application health
-
-**Endpoint:**
-
-```http
-GET /health
-```
-
-Returns the application's health-check response.
+Checks the application's health endpoint.
 
 ## How It Works
 
-1. A client submits recipient details through the certificate generation endpoint.
-2. FastAPI validates the request using Pydantic schemas.
-3. The application creates a generation job and records the relevant information in the database.
-4. The generation workflow processes the recipients and creates PDF certificates using ReportLab.
-5. Job status and certificate details are made available through the API.
-6. Clients can check the job status and retrieve generated certificates using their IDs.
+1. The client submits recipient information through the API.
+2. FastAPI validates the request using Pydantic.
+3. The application creates a generation job and records relevant information in the database.
+4. The generation workflow creates PDF certificates using ReportLab.
+5. Job status and certificate information are made available through the API.
+6. The client can check job status and retrieve certificates using their IDs.
 
-The implementation uses FastAPI background tasks for asynchronous job processing within the application. These tasks are not a replacement for a dedicated, durable task queue in a large-scale production system.
+The application uses FastAPI background tasks for job processing. For large-scale production workloads, a dedicated task queue could provide more durable processing and retry capabilities.
 
 ## Error Handling and Validation
 
-The application is designed to handle invalid inputs and certificate-generation errors. Request validation helps prevent malformed data from reaching the business logic. Failure isolation allows the application to handle individual recipient failures without unnecessarily stopping the entire batch.
-
-The exact HTTP status codes and error response formats depend on the implemented endpoint behavior.
-
-## Configuration and Generated Files
-
-SQLite is the default database configuration. Review the application configuration before changing database settings.
-
-Generated certificates and other runtime files should generally remain outside version control unless the assignment explicitly requires sample outputs to be committed.
+The application validates incoming requests and handles errors that occur during certificate generation. Individual recipient failures can be isolated so that one failed certificate does not necessarily stop processing the remaining recipients.
 
 ## Future Improvements
 
-Possible improvements include:
-
-* Integrating a dedicated task queue, such as Celery or RQ, for durable background processing.
-* Adding database migrations with Alembic.
-* Implementing authentication and role-based authorization.
-* Supporting additional certificate templates and custom fonts.
-* Improving logging, monitoring, and retry mechanisms.
-* Adding continuous integration to run automated tests on each pull request.
-* Adding deployment configuration for a production environment.
+* Add a dedicated task queue for durable background processing.
+* Add database migrations using Alembic.
+* Implement authentication and authorization.
+* Support additional certificate templates and custom fonts.
+* Improve logging, monitoring, and retry mechanisms.
+* Add continuous integration to run tests automatically.
+* Prepare deployment configuration for production.
 
 ## Author
 
@@ -221,4 +184,6 @@ Possible improvements include:
 
 GitHub: [kethan1906](https://github.com/kethan1906)
 
+## License
 
+A license has not yet been specified. Add a license file if you intend to distribute this project under a particular open-source license.
