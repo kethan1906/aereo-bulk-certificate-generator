@@ -1,0 +1,27 @@
+# Virtual environment
+.venv/
+venv/
+env/
+
+# Secrets / local configuration
+.env
+
+# Local database
+*.db
+*.sqlite3
+
+# Generated certificates (keep the folder, ignore the PDFs)
+generated/*
+!generated/.gitkeep
+
+# Python / tooling caches
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Editor / OS
+.vscode/
+.idea/
+.DS_Store
