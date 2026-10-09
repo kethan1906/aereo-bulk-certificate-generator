@@ -221,6 +221,4 @@ Possible improvements include:
 
 GitHub: [kethan1906](https://github.com/kethan1906)
 
-## License
 
-Add a license file if you intend to distribute this project under a specific open-source license.
